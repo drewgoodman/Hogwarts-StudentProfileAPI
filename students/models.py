@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -9,6 +11,11 @@ HOGWARTS_HOUSES = (
     (HUFFL:= 'HUFFLEPUFF', "Hufflepuff"),
     (SLYTH:= 'SLYTHERIN', "Slytherin"),
 )
+
+def upload_student_image(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.id, ext)
+    return os.path.join('uploads/students', filename)
 
 class Student(models.Model):
 
@@ -22,7 +29,7 @@ class Student(models.Model):
         validators=[MaxValueValidator(7), MinValueValidator(1)])
     enrollDate = models.DateField(auto_now=False, auto_now_add=False)
     image = models.ImageField(
-        upload_to="uploads/students/",
+        upload_to=upload_student_image,
         null=True, blank=True,
         width_field="width_field",
         height_field="height_field"
@@ -33,6 +40,10 @@ class Student(models.Model):
     def __str__(self):
         return self.firstName
 
+def upload_course_image(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.id, ext)
+    return os.path.join('uploads/courses', filename)
 
 class Course(models.Model):
 
@@ -42,7 +53,7 @@ class Course(models.Model):
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(7)])
     image = models.ImageField(
-        upload_to="uploads/courses/",
+        upload_to=upload_course_image,
         null=True, blank=True,
         width_field="width_field",
         height_field="height_field"
