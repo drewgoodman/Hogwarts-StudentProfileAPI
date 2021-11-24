@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from hogwartsapi.api.serializers import StudentSerializer
 
 from rest_framework import status
 from rest_framework.decorators import api_view
