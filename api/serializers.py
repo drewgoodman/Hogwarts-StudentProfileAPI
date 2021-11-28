@@ -28,6 +28,13 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Course
+        fields = ['name']
+
+
 class EnrollmentSerializer(serializers.ModelSerializer):
 
     name = serializers.CharField(source="course.name")
