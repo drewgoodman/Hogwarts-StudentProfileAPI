@@ -26,7 +26,7 @@ class StudentDetailSerializer(serializers.ModelSerializer):
         fields = ['id','firstName','lastName','skill','house','status','currentYear','enrollDate','image','courses','tags']
 
     def get_courses(self, obj):
-        courses = obj.enrollment_set.all().order_by('name')
+        courses = obj.enrollment_set.all().order_by('course__name')
         serializer = EnrollmentSerializer(courses, many=True)
         return serializer.data
 
