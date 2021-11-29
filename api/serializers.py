@@ -2,7 +2,21 @@ from rest_framework import serializers
 
 from students.models import Student, Course, Enrollment, Grade, Tag
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentShallowSerializer(serializers.ModelSerializer):
+
+    tags = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Student
+        fields = ['id','firstName','lastName','house','status','currentYear','enrollDate','image','tags']
+
+    def get_tags(self, obj):
+        tags = obj.tag_set.all().order_by('name')
+        serializer = TagSerializer(tags, many=True)
+        return serializer.data
+
+
+class StudentDetailSerializer(serializers.ModelSerializer):
 
     courses = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
@@ -12,12 +26,12 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ['id','firstName','lastName','skill','house','status','currentYear','enrollDate','image','courses','tags']
 
     def get_courses(self, obj):
-        courses = obj.enrollment_set.all()
+        courses = obj.enrollment_set.all().order_by('name')
         serializer = EnrollmentSerializer(courses, many=True)
         return serializer.data
 
     def get_tags(self, obj):
-        tags = obj.tag_set.all()
+        tags = obj.tag_set.all().order_by('name')
         serializer = TagSerializer(tags, many=True)
         return serializer.data
 
