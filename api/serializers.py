@@ -9,7 +9,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id','firstName','lastName','skill','house','currentYear','enrollDate','image','courses','tags']
+        fields = ['id','firstName','lastName','skill','house','status','currentYear','enrollDate','image','courses','tags']
 
     def get_courses(self, obj):
         courses = obj.enrollment_set.all()

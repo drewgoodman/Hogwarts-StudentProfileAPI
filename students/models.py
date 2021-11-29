@@ -12,6 +12,13 @@ HOGWARTS_HOUSES = (
     (SLYTH:= 'SLYTHERIN', "Slytherin"),
 )
 
+STUDENT_STATUS = (
+    (ATTENDING:= 'ATTENDING', 'Attending'),
+    (GRADUATED:= 'GRADUATED', 'Graduated'),
+    (EXPELLED:= 'EXPELLED', 'Expelled'),
+    (DECEASED:= 'DECEASED', 'Deceased'),
+)
+
 def upload_student_image(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (instance.id, ext)
@@ -23,7 +30,8 @@ class Student(models.Model):
     firstName = models.CharField(max_length=30, null=False, blank=True)
     lastName = models.CharField(max_length=30, null=False, blank=True)
     skill = models.CharField(max_length=50, null=True, blank=True)
-    house = models.CharField(null=True, blank=True, max_length=10, choices=HOGWARTS_HOUSES, default=GRYFF)
+    house = models.CharField(max_length=10, choices=HOGWARTS_HOUSES, default=GRYFF)
+    status = models.CharField(max_length=12, choices=STUDENT_STATUS, default=ATTENDING)
     currentYear = models.IntegerField(
         default=1,
         validators=[MaxValueValidator(7), MinValueValidator(1)])
