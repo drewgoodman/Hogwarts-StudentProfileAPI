@@ -32,7 +32,7 @@ class StudentDetailSerializer(serializers.ModelSerializer):
 
     def get_tags(self, obj):
         tags = obj.tag_set.all().order_by('name')
-        serializer = TagSerializer(tags, many=True)
+        serializer = TagDetailSerializer(tags, many=True)
         return serializer.data
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -47,6 +47,13 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ['name']
+
+
+class TagDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Course
+        fields = ['id','name']
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
