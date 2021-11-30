@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from students.models import Student, Course, Enrollment, Grade, Tag
-from .serializers import StudentShallowSerializer, StudentDetailSerializer, CourseSerializer, TagSerializer
+from .serializers import StudentShallowSerializer, StudentDetailSerializer, CourseSerializer, TagSerializer, TagDetailSerializer
 
 
 # Create your views here.
@@ -52,8 +52,7 @@ def create_tag(request):
         name=data['tagName'],
         student=Student.objects.get(id=data['studentId'])
     )
-    tag.save()
-    serializer= TagSerializer(tag, many=False)
+    serializer= TagDetailSerializer(tag, many=False)
     return Response(serializer.data)
 
 @api_view(['DELETE'])
