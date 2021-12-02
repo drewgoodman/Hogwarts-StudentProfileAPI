@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from students.models import Student, Course, Enrollment, Grade, Tag
-from .serializers import StudentShallowSerializer, StudentDetailSerializer, CourseSerializer, TagSerializer, TagDetailSerializer
+from .serializers import StudentShallowSerializer, StudentDetailSerializer, CourseShallowSerializer, CourseDetailSerializer, TagSerializer, TagDetailSerializer
 
 
 # Create your views here.
@@ -36,7 +36,13 @@ def student_detail(request, pk):
 @api_view(['GET'])
 def courses_list(request):
     courses = Course.objects.all().order_by("name")
-    serializer = CourseSerializer(courses, many=True)
+    serializer = CourseShallowSerializer(courses, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def course_detail(request, pk):
+    course = Course.objects.get(id=pk)
+    serializer = CourseDetailSerializer(course, many=False)
     return Response(serializer.data)
 
 @api_view(['GET'])

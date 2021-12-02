@@ -53,6 +53,7 @@ def upload_course_image(instance, filename):
     filename = "%s.%s" % (instance.id, ext)
     return os.path.join('uploads/courses', filename)
 
+
 class Course(models.Model):
 
     id = models.AutoField(primary_key=True, editable=False)
@@ -72,6 +73,7 @@ class Course(models.Model):
     def __str__(self):
         return self.name
 
+
 class Enrollment(models.Model):
 
     id = models.AutoField(primary_key=True, editable=False)
@@ -83,6 +85,7 @@ class Enrollment(models.Model):
 
     def course_name(self):
         return self.course.name
+
 
 class Grade(models.Model):
 

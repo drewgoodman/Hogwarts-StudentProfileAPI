@@ -27,7 +27,7 @@ class StudentDetailSerializer(serializers.ModelSerializer):
 
     def get_courses(self, obj):
         courses = obj.enrollment_set.all().order_by('course__name')
-        serializer = EnrollmentSerializer(courses, many=True)
+        serializer = EnrollmentStudentSerializer(courses, many=True)
         return serializer.data
 
     def get_tags(self, obj):
@@ -35,11 +35,25 @@ class StudentDetailSerializer(serializers.ModelSerializer):
         serializer = TagDetailSerializer(tags, many=True)
         return serializer.data
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseShallowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
         fields = '__all__'
+
+
+class CourseDetailSerializer(serializers.ModelSerializer):
+
+    students = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+    def get_students(self, obj):
+        students = obj.enrollment_set.all().order_by('student__lastName')
+        serializer = EnrollmentCourseSerializer(students, many=True)
+        return serializer.data
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -56,7 +70,7 @@ class TagDetailSerializer(serializers.ModelSerializer):
         fields = ['id','name']
 
 
-class EnrollmentSerializer(serializers.ModelSerializer):
+class EnrollmentStudentSerializer(serializers.ModelSerializer):
 
     name = serializers.CharField(source="course.name")
     grades = serializers.SerializerMethodField(read_only=True)
@@ -64,6 +78,26 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
         fields = ['name','grades','id']
+
+    def get_grades(self, obj):
+        grades = obj.grade_set.all()
+        serializer = GradeSerializer(grades, many=True)
+        return serializer.data
+
+
+class EnrollmentCourseSerializer(serializers.ModelSerializer):
+
+    firstName = serializers.CharField(source="student.firstName")
+    lastName = serializers.CharField(source="student.lastName")
+    house = serializers.CharField(source="student.house")
+    currentYear = serializers.IntegerField(source='student.currentYear')
+    image = serializers.ImageField(source="student.image")
+
+    grades = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Enrollment
+        fields = ['firstName','lastName','grades','id','house','currentYear','image']
 
     def get_grades(self, obj):
         grades = obj.grade_set.all()
