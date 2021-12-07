@@ -8,7 +8,7 @@ class StudentShallowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id','firstName','lastName','house','status','currentYear','enrollDate','image','tags']
+        fields = ['id','firstName','lastName','birthday','house','status','currentYear','enrollDate','image','tags']
 
     def get_tags(self, obj):
         tags = obj.tag_set.all().order_by('name')
@@ -23,7 +23,7 @@ class StudentDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id','firstName','lastName','skill','house','status','currentYear','enrollDate','image','courses','tags']
+        fields = ['id','firstName','lastName','skill','birthday','house','status','currentYear','enrollDate','image','courses','tags']
 
     def get_courses(self, obj):
         courses = obj.enrollment_set.all().order_by('course__name')

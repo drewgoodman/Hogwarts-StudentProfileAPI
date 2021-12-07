@@ -29,6 +29,7 @@ class Student(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     firstName = models.CharField(max_length=30, null=False, blank=True)
     lastName = models.CharField(max_length=30, null=False, blank=True)
+    birthday = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
     skill = models.CharField(max_length=50, null=True, blank=True)
     house = models.CharField(max_length=10, choices=HOGWARTS_HOUSES, default=GRYFF)
     status = models.CharField(max_length=12, choices=STUDENT_STATUS, default=ATTENDING)
