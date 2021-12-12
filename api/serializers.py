@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from rest_framework import serializers
 
 from students.models import Student, Course, Enrollment, Grade, Tag
@@ -37,9 +39,15 @@ class StudentDetailSerializer(serializers.ModelSerializer):
 
 class CourseShallowSerializer(serializers.ModelSerializer):
 
+    studentCount = serializers.SerializerMethodField()
+
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['id', 'name', 'image', 'recommendedYear', 'studentCount']
+    
+    def get_studentCount(self, obj):
+        students = obj.enrollment_set.all().count()
+        return students
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
