@@ -7,15 +7,20 @@ from students.models import Student, Course, Enrollment, Grade, Tag
 class StudentShallowSerializer(serializers.ModelSerializer):
 
     tags = serializers.SerializerMethodField(read_only=True)
+    enrolledCount = serializers.SerializerMethodField()
 
     class Meta:
         model = Student
-        fields = ['id','firstName','lastName','birthday','house','status','currentYear','enrollDate','image','tags']
+        fields = ['id','firstName','lastName','birthday','house','status','currentYear','enrollDate','enrolledCount','image','tags']
 
     def get_tags(self, obj):
         tags = obj.tag_set.all().order_by('name')
         serializer = TagSerializer(tags, many=True)
         return serializer.data
+
+    def get_enrolledCount(self, obj):
+        courses = obj.enrollment_set.all().count()
+        return courses
 
 
 class StudentDetailSerializer(serializers.ModelSerializer):
