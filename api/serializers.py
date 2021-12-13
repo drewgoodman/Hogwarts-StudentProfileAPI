@@ -104,6 +104,7 @@ class EnrollmentCourseSerializer(serializers.ModelSerializer):
     lastName = serializers.CharField(source="student.lastName")
     house = serializers.CharField(source="student.house")
     currentYear = serializers.IntegerField(source='student.currentYear')
+    id = serializers.IntegerField(source='student.id')
     image = serializers.ImageField(source="student.image")
 
     grades = serializers.SerializerMethodField(read_only=True)
