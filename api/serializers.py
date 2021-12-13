@@ -87,6 +87,7 @@ class EnrollmentStudentSerializer(serializers.ModelSerializer):
 
     name = serializers.CharField(source="course.name")
     grades = serializers.SerializerMethodField(read_only=True)
+    id = serializers.IntegerField(source='course.id')
 
     class Meta:
         model = Enrollment
