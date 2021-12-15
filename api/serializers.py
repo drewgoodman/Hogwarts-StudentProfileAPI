@@ -45,14 +45,22 @@ class StudentDetailSerializer(serializers.ModelSerializer):
 class CourseShallowSerializer(serializers.ModelSerializer):
 
     studentCount = serializers.SerializerMethodField()
+    professorDetails = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'image', 'recommendedYear', 'studentCount','professor']
+        fields = ['id', 'name', 'image', 'recommendedYear', 'studentCount','professorDetails']
     
     def get_studentCount(self, obj):
         students = obj.enrollment_set.all().count()
         return students
+
+    def get_professorDetails(self, obj):
+        professor = obj.professor
+        if professor:
+            serializer = ProfessorSerializer(professor, many=False)
+            return serializer.data
+        return ""
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
