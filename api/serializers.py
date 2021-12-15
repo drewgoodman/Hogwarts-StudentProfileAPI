@@ -2,7 +2,7 @@ from django.db.models import Count
 
 from rest_framework import serializers
 
-from students.models import Student, Course, Enrollment, Grade, Tag
+from students.models import Student, Professor, Course, Enrollment, Grade, Tag
 
 class StudentShallowSerializer(serializers.ModelSerializer):
 
@@ -48,7 +48,7 @@ class CourseShallowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'image', 'recommendedYear', 'studentCount']
+        fields = ['id', 'name', 'image', 'recommendedYear', 'studentCount','professor']
     
     def get_studentCount(self, obj):
         students = obj.enrollment_set.all().count()
@@ -58,6 +58,7 @@ class CourseShallowSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
 
     students = serializers.SerializerMethodField(read_only=True)
+    professorDetails = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -67,6 +68,20 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         students = obj.enrollment_set.all().order_by('student__lastName')
         serializer = EnrollmentCourseSerializer(students, many=True)
         return serializer.data
+
+    def get_professorDetails(self, obj):
+        professor = obj.professor
+        if professor:
+            serializer = ProfessorSerializer(professor, many=False)
+            return serializer.data
+        return ""
+
+
+class ProfessorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Professor
+        fields = ['firstName', 'lastName', 'image']
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -88,16 +103,23 @@ class EnrollmentStudentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="course.name")
     grades = serializers.SerializerMethodField(read_only=True)
     id = serializers.IntegerField(source='course.id')
+    professor = serializers.SerializerMethodField()
 
     class Meta:
         model = Enrollment
-        fields = ['name','grades','id']
+        fields = ['name','grades','id','professor']
 
     def get_grades(self, obj):
         grades = obj.grade_set.all()
         serializer = GradeSerializer(grades, many=True)
         return serializer.data
-
+    
+    def get_professor(self, obj):
+        professor = obj.course.professor
+        if professor:
+            serializer = ProfessorSerializer(professor, many=False)
+            return serializer.data
+        return ""
 
 class EnrollmentCourseSerializer(serializers.ModelSerializer):
 

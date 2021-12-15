@@ -24,6 +24,7 @@ def upload_student_image(instance, filename):
     filename = "%s.%s" % (instance.id, ext)
     return os.path.join('uploads/students', filename)
 
+
 class Student(models.Model):
 
     id = models.AutoField(primary_key=True, editable=False)
@@ -47,7 +48,32 @@ class Student(models.Model):
     width_field = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
-        return self.firstName
+        return f'{self.firstName} {self.lastName}'
+
+
+def upload_professor_image(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.id, ext)
+    return os.path.join('uploads/professors', filename)
+
+
+class Professor(models.Model):
+
+    id = models.AutoField(primary_key=True, editable=False)
+    firstName = models.CharField(max_length=30, null=False, blank=True)
+    lastName = models.CharField(max_length=30, null=False, blank=True)
+    image = models.ImageField(
+        upload_to=upload_professor_image,
+        null=True, blank=True,
+        width_field="width_field",
+        height_field="height_field"
+    )
+    height_field = models.IntegerField(default=0, null=True, blank=True)
+    width_field = models.IntegerField(default=0, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.firstName} {self.lastName}'
+
 
 def upload_course_image(instance, filename):
     ext = filename.split('.')[-1]
@@ -59,6 +85,7 @@ class Course(models.Model):
 
     id = models.AutoField(primary_key=True, editable=False)
     name = models.CharField(max_length=30, null=False, blank=True)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
     recommendedYear = models.IntegerField(
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(7)])
